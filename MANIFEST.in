@@ -1,0 +1,2 @@
+include README.md LICENSE.txt ChangeLog
+include test_dockermon.py
