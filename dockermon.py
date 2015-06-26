@@ -18,7 +18,7 @@ __version__ = '0.1.0'
 bufsize = 1024
 
 
-class HTTPError(Exception):
+class DockermonError(Exception):
     pass
 
 
@@ -54,12 +54,15 @@ def watch(callback, path='/var/run/docker.sock'):
         header, payload = read_http_header(sock)
         status, reason = header_status(header)
         if status != HTTP_OK:
-            raise HTTPError('bad HTTP status: %s %s' % (status, reason))
+            raise DockermonError('bad HTTP status: %s %s' % (status, reason))
 
         # Messages are \r\n<size in hex><JSON payload>\r\n
         buf = [payload]
         while True:
-            buf.append(sock.recv(bufsize).decode('utf-8'))
+            chunk = sock.recv(bufsize)
+            if not chunk:
+                raise EOFError('socket closed')
+            buf.append(chunk.decode('utf-8'))
             data = ''.join(buf)
             i = data.find('\r\n')
             if i == -1:
