@@ -125,7 +125,13 @@ if __name__ == '__main__':
                         help='program to call (e.g. "jq --unbuffered .")')
     parser.add_argument('--socket-url', default=default_sock_url,
             help='socket url (ipc:///path/to/sock or tcp:///host:port)')
+    parser.add_argument('--version', help='print version and exit',
+        action='store_true', default=False)
     args = parser.parse_args()
+
+    if args.version:
+        print('dockermon %s' % __version__)
+        raise SystemExit
 
     if args.prog:
         prog = shlex.split(args.prog)
