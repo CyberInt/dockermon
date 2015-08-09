@@ -22,6 +22,13 @@ encode in JSON will be send to the program standard input. For example:
 If not program is specified, events will be printed to standard output as JSON
 objects, one per line.
 
+# Hacking
+"one script no external dependencies" is a design goal, let's not break it :)
+
+We use [tox](https://tox.readthedocs.org/en/latest/) to test. Please make sure
+your code passes on all supported platforms (see `tox.ini`) before sending a
+pull request.
+
 # Bugs and Project
 
 https://github.com/CyberInt/dockermon

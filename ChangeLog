@@ -1,3 +1,7 @@
+2015-08-09 version 0.2.1
+    * Fixed manifest
+    * Testing with tox
+
 2015-08-09 version 0.2.0
     * Added support for TCP sockets and --socket-url switch
     * Added --version
