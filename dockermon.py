@@ -123,9 +123,11 @@ if __name__ == '__main__':
     parser = ArgumentParser(description=__doc__)
     parser.add_argument('--prog', default=None,
                         help='program to call (e.g. "jq --unbuffered .")')
-    parser.add_argument('--socket-url', default=default_sock_url,
-            help='socket url (ipc:///path/to/sock or tcp:///host:port)')
-    parser.add_argument('--version', help='print version and exit',
+    parser.add_argument(
+        '--socket-url', default=default_sock_url,
+        help='socket url (ipc:///path/to/sock or tcp:///host:port)')
+    parser.add_argument(
+        '--version', help='print version and exit',
         action='store_true', default=False)
     args = parser.parse_args()
 

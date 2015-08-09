@@ -27,7 +27,7 @@ setup(
     license='MIT',
     url='https://github.com/CyberInt/dockermon',
     py_modules=['dockermon'],
-    setup_requires=['nose', 'flake8'],
+    tests_require=['nose', 'flake8', 'tox'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',

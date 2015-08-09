@@ -1,2 +1,2 @@
-include README.md LICENSE.txt ChangeLog
+include README.md LICENSE.txt ChangeLog Makefile run-tests.sh
 include test_dockermon.py
