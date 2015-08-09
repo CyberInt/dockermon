@@ -16,7 +16,7 @@ else:
     from http.client import OK as HTTP_OK
     from urllib.parse import urlparse
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 bufsize = 1024
 default_sock_url = 'ipc:///var/run/docker.sock'
 
