@@ -11,11 +11,14 @@ import shlex
 
 if version_info[:2] < (3, 0):
     from httplib import OK as HTTP_OK
+    from urlparse import urlparse
 else:
     from http.client import OK as HTTP_OK
+    from urllib.parse import urlparse
 
 __version__ = '0.1.0'
 bufsize = 1024
+default_sock_url = 'ipc:///var/run/docker.sock'
 
 
 class DockermonError(Exception):
@@ -44,10 +47,31 @@ def header_status(header):
     return int(fields[1]), fields[2]
 
 
-def watch(callback, path='/var/run/docker.sock'):
-    """Watch docker events. Will call callback with each new event (dict)."""
-    sock = socket(AF_UNIX)
-    sock.connect(path)
+def connect(url):
+    """Connect to UNIX or TCP socket.
+
+        url can be either tcp://<host>:port or ipc://<path>
+    """
+    url = urlparse(url)
+    if url.scheme == 'tcp':
+        sock = socket()
+        netloc = tuple(url.netloc.rsplit(':', 1))
+    elif url.scheme == 'ipc':
+        sock = socket(AF_UNIX)
+        netloc = url.path
+    else:
+        raise ValueError('unknown socket type: %s' % url.scheme)
+
+    sock.connect(netloc)
+    return sock
+
+
+def watch(callback, url=default_sock_url):
+    """Watch docker events. Will call callback with each new event (dict).
+
+        url can be either tcp://<host>:port or ipc://<path>
+    """
+    sock = connect(url)
 
     with closing(sock):
         sock.sendall(b'GET /events HTTP/1.1\n\n')
@@ -99,6 +123,8 @@ if __name__ == '__main__':
     parser = ArgumentParser(description=__doc__)
     parser.add_argument('--prog', default=None,
                         help='program to call (e.g. "jq --unbuffered .")')
+    parser.add_argument('--socket-url', default=default_sock_url,
+            help='socket url (ipc:///path/to/sock or tcp:///host:port)')
     args = parser.parse_args()
 
     if args.prog:
@@ -108,6 +134,6 @@ if __name__ == '__main__':
         callback = print_callback
 
     try:
-        watch(callback)
+        watch(callback, args.socket_url)
     except (KeyboardInterrupt, EOFError):
         pass
