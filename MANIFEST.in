@@ -1,2 +1,2 @@
-include README.md LICENSE.txt ChangeLog Makefile run-tests.sh
+include README.md LICENSE.txt ChangeLog Makefile run-tests.sh tox.ini
 include test_dockermon.py
