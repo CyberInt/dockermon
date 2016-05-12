@@ -74,7 +74,7 @@ def watch(callback, url=default_sock_url):
     sock = connect(url)
 
     with closing(sock):
-        sock.sendall(b'GET /events HTTP/1.1\n\n')
+        sock.sendall(b'GET /events HTTP/1.1\nHost: foo\n\n')
         header, payload = read_http_header(sock)
         status, reason = header_status(header)
         if status != HTTP_OK:
