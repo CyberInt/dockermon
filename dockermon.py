@@ -74,9 +74,11 @@ def watch(callback, url=default_sock_url):
         url can be either tcp://<host>:port or ipc://<path>
     """
     sock, hostname = connect(url)
+    request = 'GET /events HTTP/1.1\nHost: %s\n\n' % hostname
+    request = request.encode('utf-8')
 
     with closing(sock):
-        sock.sendall(b'GET /events HTTP/1.1\nHost: ' + hostname + '\n\n')
+        sock.sendall(request)
         header, payload = read_http_header(sock)
         status, reason = header_status(header)
         if status != HTTP_OK:
