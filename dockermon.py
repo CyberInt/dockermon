@@ -56,14 +56,16 @@ def connect(url):
     if url.scheme == 'tcp':
         sock = socket()
         netloc = tuple(url.netloc.rsplit(':', 1))
+        hostname = socket.gethostname()
     elif url.scheme == 'ipc':
         sock = socket(AF_UNIX)
         netloc = url.path
+        hostname = 'localhost'
     else:
         raise ValueError('unknown socket type: %s' % url.scheme)
 
     sock.connect(netloc)
-    return sock
+    return sock, hostname
 
 
 def watch(callback, url=default_sock_url):
@@ -71,10 +73,10 @@ def watch(callback, url=default_sock_url):
 
         url can be either tcp://<host>:port or ipc://<path>
     """
-    sock = connect(url)
+    sock, hostname = connect(url)
 
     with closing(sock):
-        sock.sendall(b'GET /events HTTP/1.1\n\n')
+        sock.sendall(b'GET /events HTTP/1.1\nHost: ' + hostname + '\n\n')
         header, payload = read_http_header(sock)
         status, reason = header_status(header)
         if status != HTTP_OK:
